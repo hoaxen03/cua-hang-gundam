@@ -45,7 +45,7 @@ public class OrderDao {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
             Order order = new Order();
-            order.setId(rs.getInt("id"));
+            order.setId(String.valueOf(rs.getInt("id")));
             order.setCustomerId(rs.getInt("customer_id"));
             order.setOrderDate(rs.getDate("order_date"));
             order.setTotalAmount(rs.getDouble("total_amount"));
