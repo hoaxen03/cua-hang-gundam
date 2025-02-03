@@ -29,6 +29,19 @@
     </dependencies>
 </dependencyManagement>
   <dependencies>
+
+    <dependency>
+      <groupId>org.diirt.javafx</groupId>
+      <artifactId>javafx-all</artifactId>
+      <version>3.1.7</version>
+      <type>pom</type>
+    </dependency>
+
+      <!-- Spring Boot Starter Web dependency -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
       <!-- JUnit dependency for testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -40,14 +53,7 @@
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>5.3.10</version>
-    </dependency>
-    
-    <!-- Spring Web dependency (if you are building a web application) -->
-    <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>5.3.10</version>
+        <version>5.3.12</version>
     </dependency>
         <!-- Spring Data JPA dependency -->
     <dependency>
@@ -60,16 +66,23 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter</artifactId>
     </dependency>
-        <!-- Spring Boot Starter Web dependency -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
         <!-- Spring Boot Starter Data JPA dependency -->
         <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
+        <!-- JavaFX dependencies -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>17.0.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>17.0.1</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -113,6 +126,14 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+                <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+                <mainClass>com.example.gundamstore.view.MainFrame</mainClass>
+            </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
