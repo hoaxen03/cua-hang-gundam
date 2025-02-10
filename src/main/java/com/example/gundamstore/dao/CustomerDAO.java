@@ -17,7 +17,7 @@ public class CustomerDAO {
     private JdbcTemplate jdbcTemplate;
 
     public List<Customer> findAll() {
-        String sql = "SELECT * FROM customers";
+        String sql = "SELECT * FROM gundamstore.customers";
         return jdbcTemplate.query(sql, new CustomerRowMapper());
     }
 
