@@ -31,28 +31,35 @@ public class GundamDAO {
     }
 
     public int save(Gundam gundam) {
-        String sql = "INSERT INTO gundams (name, model, price) VALUES (?, ?, ?)";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice());
+        String sql = "INSERT INTO gundams (name, model, price, series, stock) VALUES (?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock());
     }
 
     public int update(Gundam gundam) {
-        String sql = "UPDATE gundams SET name = ?, model = ?, price = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getId());
+        String sql = "UPDATE gundams SET name = ?, model = ?, price = ?, series = ?, stock = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getId());
     }
-
     public int deleteById(int id) {
         String sql = "DELETE FROM gundams WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+
+    public List<Gundam> search(String keyword) {
+        String sql = "SELECT * FROM gundams WHERE name LIKE ? OR model LIKE ? OR series LIKE ?";
+        String searchKeyword = "%" + keyword + "%";
+        return jdbcTemplate.query(sql, new GundamRowMapper(), searchKeyword, searchKeyword, searchKeyword);
     }
 
     private static final class GundamRowMapper implements RowMapper<Gundam> {
         @Override
         public Gundam mapRow(ResultSet rs, int rowNum) throws SQLException {
             Gundam gundam = new Gundam();
-            gundam.setId(String.valueOf(rs.getInt("id"))); // Convert int to String
+            gundam.setId(String.valueOf(rs.getInt("id")));
             gundam.setName(rs.getString("name"));
             gundam.setModel(rs.getString("model"));
             gundam.setPrice(rs.getDouble("price"));
+            gundam.setSeries(rs.getString("series"));
+            gundam.setStock(rs.getInt("stock"));
             return gundam;
         }
     }

@@ -27,28 +27,35 @@ public class OrderDao {
     }
 
     public int save(Order order) {
-        String sql = "INSERT INTO orders (customer_id, order_date, total_amount) VALUES (?, ?, ?)";
-        return jdbcTemplate.update(sql, order.getCustomerId(), order.getOrderDate(), order.getTotalAmount());
+        String sql = "INSERT INTO orders (customer_id, order_date, total_amount, customer, gundams) VALUES (?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, order.getCustomerId(), order.getOrderDate(), order.getTotalAmount(), order.getCustomer(), order.getGundams());
     }
 
     public int update(Order order) {
-        String sql = "UPDATE orders SET customer_id = ?, order_date = ?, total_amount = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, order.getCustomerId(), order.getOrderDate(), order.getTotalAmount(), order.getId());
+        String sql = "UPDATE orders SET customer_id = ?, order_date = ?, total_amount = ?, customer = ?, gundams = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, order.getCustomerId(), order.getOrderDate(), order.getTotalAmount(), order.getCustomer(), order.getGundams(), order.getId());
     }
-
     public int deleteById(int id) {
         String sql = "DELETE FROM orders WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+
+    public List<Order> search(String keyword) {
+        String sql = "SELECT * FROM orders WHERE customer LIKE ? OR gundams LIKE ?";
+        String searchKeyword = "%" + keyword + "%";
+        return jdbcTemplate.query(sql, new OrderRowMapper(), searchKeyword, searchKeyword);
     }
 
     private static final class OrderRowMapper implements RowMapper<Order> {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
             Order order = new Order();
-            order.setId(String.valueOf(rs.getInt("id")));
+            order.setId(rs.getInt("id"));
             order.setCustomerId(rs.getInt("customer_id"));
             order.setOrderDate(rs.getDate("order_date"));
             order.setTotalAmount(rs.getDouble("total_amount"));
+            order.setCustomer(rs.getString("customer"));
+            order.setGundams(rs.getString("gundams"));
             return order;
         }
     }

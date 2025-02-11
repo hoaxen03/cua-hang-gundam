@@ -1,34 +1,34 @@
 package com.example.gundamstore.model;
 
 import java.util.Date;
-import java.util.List;
 
 public class Order {
-    private String id;
+    private int id;
     private int customerId;
-    private Customer customer;
-    private List<Gundam> gundams;
     private Date orderDate;
     private double totalAmount;
+    private String customer;
+    private String gundams;
 
-    // Constructors
+    // Constructors, getters, and setters
+
     public Order() {
     }
 
-    public Order(String id, Customer customer, List<Gundam> gundams, Date orderDate, double totalAmount) {
+    public Order(int id, int customerId, Date orderDate, double totalAmount, String customer, String gundams) {
         this.id = id;
-        this.customer = customer;
-        this.gundams = gundams;
+        this.customerId = customerId;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
+        this.customer = customer;
+        this.gundams = gundams;
     }
 
-    // Getters and Setters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,22 +38,6 @@ public class Order {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public List<Gundam> getGundams() {
-        return gundams;
-    }
-
-    public void setGundams(List<Gundam> gundams) {
-        this.gundams = gundams;
     }
 
     public Date getOrderDate() {
@@ -72,16 +56,32 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getGundams() {
+        return gundams;
+    }
+
+    public void setGundams(String gundams) {
+        this.gundams = gundams;
+    }
+
     // toString method
     @Override
     public String toString() {
         return "Order{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", customerId=" + customerId +
-                ", customer=" + customer +
-                ", gundams=" + gundams +
                 ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
+                ", customer='" + customer + '\'' +
+                ", gundams='" + gundams + '\'' +
                 '}';
     }
 }
