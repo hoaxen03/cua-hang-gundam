@@ -10,16 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-
 @Repository
 public class GundamDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public GundamDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
     public List<Gundam> findAll() {
         String sql = "SELECT * FROM gundams";
         return jdbcTemplate.query(sql, new GundamRowMapper());
@@ -31,14 +27,15 @@ public class GundamDAO {
     }
 
     public int save(Gundam gundam) {
-        String sql = "INSERT INTO gundams (name, model, price, series, stock) VALUES (?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock());
+        String sql = "INSERT INTO gundams (name, model, price, series, stock, image_url) VALUES (?, ?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl());
     }
 
     public int update(Gundam gundam) {
-        String sql = "UPDATE gundams SET name = ?, model = ?, price = ?, series = ?, stock = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getId());
+        String sql = "UPDATE gundams SET name = ?, model = ?, price = ?, series = ?, stock = ?, image_url = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl(), gundam.getId());
     }
+
     public int deleteById(int id) {
         String sql = "DELETE FROM gundams WHERE id = ?";
         return jdbcTemplate.update(sql, id);
@@ -60,6 +57,7 @@ public class GundamDAO {
             gundam.setPrice(rs.getDouble("price"));
             gundam.setSeries(rs.getString("series"));
             gundam.setStock(rs.getInt("stock"));
+            gundam.setImageUrl(rs.getString("image_url")); // Ánh xạ thuộc tính imageUrl
             return gundam;
         }
     }

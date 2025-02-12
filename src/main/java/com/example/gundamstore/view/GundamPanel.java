@@ -9,17 +9,22 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,7 @@ public class GundamPanel extends VBox {
     private TextField priceField;
     private TextField seriesField;
     private TextField stockField;
+    private TextField imageUrlField;
     private Button addButton;
     private Button updateButton;
     private Button deleteButton;
@@ -62,12 +68,50 @@ public class GundamPanel extends VBox {
         TableColumn<Gundam, Integer> stockColumn = new TableColumn<>("Stock");
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
+        TableColumn<Gundam, String> imageColumn = new TableColumn<>("Image");
+        imageColumn.setCellValueFactory(new PropertyValueFactory<>("imageUrl"));
+        imageColumn.setCellFactory(new Callback<TableColumn<Gundam, String>, TableCell<Gundam, String>>() {            
+            @Override
+            public TableCell<Gundam, String> call(TableColumn<Gundam, String> param) {
+                return new TableCell<Gundam, String>() {
+                    private final ImageView imageView = new ImageView();
+
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            try {
+                                // Sử dụng đường dẫn tương đối để tải ảnh
+                                String imagePath = "/images/" + item;
+                                logger.info("Loading image from path: " + imagePath);
+                                Image image = new Image(getClass().getResourceAsStream(imagePath));
+                                if (image.isError()) {
+                                    throw new Exception("Image not found: " + imagePath);
+                                }
+                                imageView.setImage(image);
+                                imageView.setFitHeight(50);
+                                imageView.setFitWidth(50);
+                                imageView.setPreserveRatio(true); // Giữ tỷ lệ ảnh
+                                setGraphic(imageView);
+                            } catch (Exception e) {
+                                logger.error("Failed to load image: " + item, e);
+                                setGraphic(null);
+                            }
+                        }
+                    }
+                };
+            }
+        });
+
         List<TableColumn<Gundam, ?>> columns = new ArrayList<>();
         columns.add(nameColumn);
         columns.add(modelColumn);
         columns.add(priceColumn);
         columns.add(seriesColumn);
         columns.add(stockColumn);
+        columns.add(imageColumn);
 
         table.getColumns().addAll(columns);
 
@@ -81,6 +125,8 @@ public class GundamPanel extends VBox {
         seriesField.setPromptText("Series");
         stockField = new TextField();
         stockField.setPromptText("Stock");
+        imageUrlField = new TextField(); // Thêm trường này
+        imageUrlField.setPromptText("Image URL");
 
         addButton = new Button("Add");
         updateButton = new Button("Update");
@@ -90,7 +136,7 @@ public class GundamPanel extends VBox {
         updateButton.setOnAction(e -> updateGundam());
         deleteButton.setOnAction(e -> deleteGundam());
 
-        HBox formBox = new HBox(10, nameField, modelField, priceField, seriesField, stockField);
+        HBox formBox = new HBox(10, nameField, modelField, priceField, seriesField, stockField, imageUrlField);
         formBox.setAlignment(Pos.CENTER);
         formBox.setPadding(new Insets(10));
 
@@ -108,9 +154,18 @@ public class GundamPanel extends VBox {
 
         // Load data from the database
         loadData();
+        checkImagesDirectory();
     }
 
     @PostConstruct
+    private void checkImagesDirectory() {
+        File imagesDir = new File(getClass().getResource("/images").getFile());
+        if (!imagesDir.exists() || !imagesDir.isDirectory()) {
+            logger.error("Images directory does not exist: " + imagesDir.getAbsolutePath());
+        } else {
+            logger.info("Images directory found: " + imagesDir.getAbsolutePath());
+        }
+    }
     private void loadData() {
         try {
             ObservableList<Gundam> gundamList = FXCollections.observableArrayList(gundamDAO.findAll());
@@ -130,9 +185,9 @@ public class GundamPanel extends VBox {
             ObservableList<Gundam> gundamList = FXCollections.observableArrayList(gundamDAO.search(keyword));
             table.setItems(gundamList);
             if (gundamList.isEmpty()) {
-                logger.info("No products found for keyword: " + keyword);
+                logger.info("No products found for keyword: {}", keyword);
             } else {
-                logger.info("Products found for keyword: " + keyword);
+                logger.info("Products found for keyword: {}", keyword);
             }
         } catch (Exception e) {
             logger.error("Failed to search products.", e);
@@ -150,6 +205,7 @@ public class GundamPanel extends VBox {
             Double price = Double.parseDouble(priceField.getText());
             String series = seriesField.getText();
             int stock = Integer.parseInt(stockField.getText());
+            String imageUrl = imageUrlField.getText(); // Lấy URL ảnh
 
             Gundam gundam = new Gundam();
             gundam.setName(name);
@@ -157,6 +213,7 @@ public class GundamPanel extends VBox {
             gundam.setPrice(price);
             gundam.setSeries(series);
             gundam.setStock(stock);
+            gundam.setImageUrl(imageUrl); // Đặt URL ảnh
 
             gundamDAO.save(gundam);
             loadData(); // Reload data to refresh the table
@@ -176,6 +233,7 @@ public class GundamPanel extends VBox {
                 selectedGundam.setPrice(Double.parseDouble(priceField.getText()));
                 selectedGundam.setSeries(seriesField.getText());
                 selectedGundam.setStock(Integer.parseInt(stockField.getText()));
+                selectedGundam.setImageUrl(imageUrlField.getText()); // Cập nhật URL ảnh
 
                 gundamDAO.update(selectedGundam);
                 loadData(); // Reload data to refresh the table
@@ -211,5 +269,6 @@ public class GundamPanel extends VBox {
         priceField.clear();
         seriesField.clear();
         stockField.clear();
+        imageUrlField.clear(); // Xóa URL ảnh
     }
 }
