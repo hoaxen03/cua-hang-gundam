@@ -49,6 +49,9 @@ public class OrderPanel extends VBox {
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         table = new TableView<>();
+        TableColumn<Order, Integer> idColumn = new TableColumn<>("ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         TableColumn<Order, Integer> customerIdColumn = new TableColumn<>("Customer ID");
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         
@@ -65,6 +68,7 @@ public class OrderPanel extends VBox {
         gundamsColumn.setCellValueFactory(new PropertyValueFactory<>("gundams"));
 
         List<TableColumn<Order, ?>> columns = new ArrayList<>();
+        columns.add(idColumn);
         columns.add(customerIdColumn);
         columns.add(orderDateColumn);
         columns.add(totalAmountColumn);

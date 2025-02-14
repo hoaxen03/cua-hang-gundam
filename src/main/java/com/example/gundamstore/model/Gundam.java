@@ -7,13 +7,14 @@ public class Gundam {
     private String model;
     private double price;
     private int stock;
-    private String imageUrl; 
+    private String imageUrl;
+    private String description; 
 
     // Constructors
     public Gundam() {
     }
 
-    public Gundam(String id, String name, String series, double price, int stock ,String imageUrl) {
+    public Gundam(String id, String name, String series, double price, int stock ,String imageUrl, String description) {
         this.id = id;
         this.name = name;
         this.series = series;
@@ -21,6 +22,7 @@ public class Gundam {
         this.price = price;
         this.stock = stock;
         this.imageUrl =imageUrl;
+        this.description = description;
     }
 
     // Getters and Setters
@@ -76,6 +78,12 @@ public class Gundam {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
     // toString method
     @Override
     public String toString() {
@@ -87,6 +95,7 @@ public class Gundam {
                 ", price=" + price +
                 ", stock=" + stock +
                 ", imageUrl='"+ imageUrl + '\''+
+                ", description='"+ description +'\''+
                 '}';
     }
 }

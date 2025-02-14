@@ -46,6 +46,9 @@ public class CustomerPanel extends VBox {
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         table = new TableView<>();
+        TableColumn<Customer, String> idColumn = new TableColumn<>("ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         TableColumn<Customer, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
@@ -59,6 +62,7 @@ public class CustomerPanel extends VBox {
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
 
         List<TableColumn<Customer, ?>> columns = new ArrayList<>();
+        columns.add(idColumn);        
         columns.add(nameColumn);
         columns.add(emailColumn);
         columns.add(phoneNumberColumn);

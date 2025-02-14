@@ -33,7 +33,7 @@ public class MainFrame extends Application {
 
         // Create buttons for navigation
         Button btnCustomers = new Button("Customers");
-        Button btnGundams = new Button("Gundams");
+        Button btnGundams = new Button("Products");
         Button btnOrders = new Button("Orders");
 
         // Create search fields and buttons
@@ -58,7 +58,7 @@ public class MainFrame extends Application {
         btnSearchOrder.setOnAction(e -> showSearchResults(searchOrderField.getText(), context, "order"));
 
         // Create top panel with title and navigation buttons
-        Label titleLabel = new Label("Gundam Store Management");
+        Label titleLabel = new Label("Gunpla Store Management");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         HBox titleBox = new HBox(titleLabel);
         titleBox.setAlignment(Pos.CENTER);

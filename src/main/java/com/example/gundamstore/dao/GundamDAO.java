@@ -27,13 +27,13 @@ public class GundamDAO {
     }
 
     public int save(Gundam gundam) {
-        String sql = "INSERT INTO gundams (name, model, price, series, stock, image_url) VALUES (?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl());
+        String sql = "INSERT INTO gundams (name, model, price, series, stock, image_url, description) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl(), gundam.getDescription());
     }
 
     public int update(Gundam gundam) {
-        String sql = "UPDATE gundams SET name = ?, model = ?, price = ?, series = ?, stock = ?, image_url = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl(), gundam.getId());
+        String sql = "UPDATE gundams SET name = ?, model = ?, price = ?, series = ?, stock = ?, image_url = ?, description = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, gundam.getName(), gundam.getModel(), gundam.getPrice(), gundam.getSeries(), gundam.getStock(), gundam.getImageUrl(), gundam.getDescription(), gundam.getId());
     }
 
     public int deleteById(int id) {
@@ -42,9 +42,9 @@ public class GundamDAO {
     }
 
     public List<Gundam> search(String keyword) {
-        String sql = "SELECT * FROM gundams WHERE name LIKE ? OR model LIKE ? OR series LIKE ?";
+        String sql = "SELECT * FROM gundams WHERE name LIKE ? OR model LIKE ? OR series LIKE ? OR description LIKE ?";
         String searchKeyword = "%" + keyword + "%";
-        return jdbcTemplate.query(sql, new GundamRowMapper(), searchKeyword, searchKeyword, searchKeyword);
+        return jdbcTemplate.query(sql, new GundamRowMapper(), searchKeyword, searchKeyword, searchKeyword, searchKeyword);
     }
 
     private static final class GundamRowMapper implements RowMapper<Gundam> {
@@ -57,7 +57,8 @@ public class GundamDAO {
             gundam.setPrice(rs.getDouble("price"));
             gundam.setSeries(rs.getString("series"));
             gundam.setStock(rs.getInt("stock"));
-            gundam.setImageUrl(rs.getString("image_url")); // Ánh xạ thuộc tính imageUrl
+            gundam.setImageUrl(rs.getString("image_url"));
+            gundam.setDescription(rs.getString("description")); // Ánh xạ thuộc tính description
             return gundam;
         }
     }

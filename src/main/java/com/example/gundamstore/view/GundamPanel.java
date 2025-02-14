@@ -39,6 +39,7 @@ public class GundamPanel extends VBox {
     private TextField seriesField;
     private TextField stockField;
     private TextField imageUrlField;
+    private TextField descriptionField;
     private Button addButton;
     private Button updateButton;
     private Button deleteButton;
@@ -53,6 +54,10 @@ public class GundamPanel extends VBox {
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         table = new TableView<>();
+
+        TableColumn<Gundam, String> idColumn = new TableColumn<>("ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         TableColumn<Gundam, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
@@ -70,6 +75,30 @@ public class GundamPanel extends VBox {
 
         TableColumn<Gundam, String> imageColumn = new TableColumn<>("Image");
         imageColumn.setCellValueFactory(new PropertyValueFactory<>("imageUrl"));
+
+        TableColumn<Gundam, String> descriptionColumn = new TableColumn<>("Description"); // Thêm cột mô tả
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionColumn.setCellFactory(new Callback<TableColumn<Gundam, String>, TableCell<Gundam, String>>() {
+            @Override
+            public TableCell<Gundam, String> call(TableColumn<Gundam, String> param) {
+                return new TableCell<Gundam, String>() {
+                    private final Text text = new Text();
+
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            text.setText(item);
+                            text.setWrappingWidth(descriptionColumn.getWidth() - -100); // Thiết lập độ rộng để xuống dòng
+                            setGraphic(text);
+                        }
+                    }
+                };
+            }
+        });
+        
         imageColumn.setCellFactory(new Callback<TableColumn<Gundam, String>, TableCell<Gundam, String>>() {            
             @Override
             public TableCell<Gundam, String> call(TableColumn<Gundam, String> param) {
@@ -106,12 +135,14 @@ public class GundamPanel extends VBox {
         });
 
         List<TableColumn<Gundam, ?>> columns = new ArrayList<>();
+        columns.add(idColumn);
         columns.add(nameColumn);
         columns.add(modelColumn);
         columns.add(priceColumn);
         columns.add(seriesColumn);
         columns.add(stockColumn);
         columns.add(imageColumn);
+        columns.add(descriptionColumn);
 
         table.getColumns().addAll(columns);
 
@@ -125,8 +156,10 @@ public class GundamPanel extends VBox {
         seriesField.setPromptText("Series");
         stockField = new TextField();
         stockField.setPromptText("Stock");
-        imageUrlField = new TextField(); // Thêm trường này
+        imageUrlField = new TextField();
         imageUrlField.setPromptText("Image URL");
+        descriptionField = new TextField(); // Thêm trường mô tả
+        descriptionField.setPromptText("Description"); // Đặt mô tả
 
         addButton = new Button("Add");
         updateButton = new Button("Update");
@@ -136,7 +169,7 @@ public class GundamPanel extends VBox {
         updateButton.setOnAction(e -> updateGundam());
         deleteButton.setOnAction(e -> deleteGundam());
 
-        HBox formBox = new HBox(10, nameField, modelField, priceField, seriesField, stockField, imageUrlField);
+        HBox formBox = new HBox(10, nameField, modelField, priceField, seriesField, stockField, imageUrlField,descriptionField);
         formBox.setAlignment(Pos.CENTER);
         formBox.setPadding(new Insets(10));
 
@@ -206,6 +239,7 @@ public class GundamPanel extends VBox {
             String series = seriesField.getText();
             int stock = Integer.parseInt(stockField.getText());
             String imageUrl = imageUrlField.getText(); // Lấy URL ảnh
+            String description = descriptionField.getText(); // Lấy mô tả
 
             Gundam gundam = new Gundam();
             gundam.setName(name);
@@ -214,6 +248,7 @@ public class GundamPanel extends VBox {
             gundam.setSeries(series);
             gundam.setStock(stock);
             gundam.setImageUrl(imageUrl); // Đặt URL ảnh
+            gundam.setDescription(description); // Đặt mô tả
 
             gundamDAO.save(gundam);
             loadData(); // Reload data to refresh the table
@@ -233,7 +268,8 @@ public class GundamPanel extends VBox {
                 selectedGundam.setPrice(Double.parseDouble(priceField.getText()));
                 selectedGundam.setSeries(seriesField.getText());
                 selectedGundam.setStock(Integer.parseInt(stockField.getText()));
-                selectedGundam.setImageUrl(imageUrlField.getText()); // Cập nhật URL ảnh
+                selectedGundam.setImageUrl(imageUrlField.getText());
+                selectedGundam.setDescription(descriptionField.getText()); // Thiết lập giá trị mô tả
 
                 gundamDAO.update(selectedGundam);
                 loadData(); // Reload data to refresh the table
@@ -270,5 +306,6 @@ public class GundamPanel extends VBox {
         seriesField.clear();
         stockField.clear();
         imageUrlField.clear(); // Xóa URL ảnh
+        descriptionField.clear(); // Xóa giá trị mô tả
     }
 }
